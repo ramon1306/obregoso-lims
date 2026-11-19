@@ -17,14 +17,44 @@ Requisitos de ejecución:
 
 import os
 import json
+import hmac
 import sqlite3
 from datetime import datetime
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, Response, request, jsonify, render_template_string
 
 app = Flask(__name__)
-DB_PATH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "laboratorio_bromatologia.db"
+DB_PATH = os.environ.get(
+    "LAB_DB_PATH",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "laboratorio_bromatologia.db"),
 )
+
+
+@app.before_request
+def require_production_authentication():
+    if os.environ.get("APP_ENV", "development").lower() != "production":
+        return None
+
+    username = os.environ.get("APP_USERNAME", "")
+    password = os.environ.get("APP_PASSWORD", "")
+    if not username or len(password) < 16:
+        app.logger.error("Production authentication credentials are not configured")
+        return Response("Application access is not configured.", status=503)
+
+    credentials = request.authorization
+    valid_username = credentials is not None and hmac.compare_digest(
+        credentials.username or "", username
+    )
+    valid_password = credentials is not None and hmac.compare_digest(
+        credentials.password or "", password
+    )
+    if not (valid_username and valid_password):
+        return Response(
+            "Authentication required.",
+            status=401,
+            headers={"WWW-Authenticate": 'Basic realm="OBREGOSO LIMS"'},
+        )
+
+    return None
 
 
 # ==============================================================================
@@ -2380,4 +2410,8 @@ if __name__ == "__main__":
     print("  Servidor iniciado en: http://127.0.0.1:5000")
     print("  Base de datos SQLite: ", DB_PATH)
     print("=" * 65)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=os.environ.get("APP_ENV", "development").lower() != "production",
+    )
