@@ -18,6 +18,9 @@ if not os.environ.get("APP_USERNAME") or len(os.environ.get("APP_PASSWORD", ""))
         "Set APP_USERNAME and a 16-character APP_PASSWORD in the private .env file."
     )
 
-from sistema_web_de_laboratorio_bromatol_gico_flask_sqlite_pdf_a4 import app, init_db
+from sistema_web_de_laboratorio_bromatol_gico_flask_sqlite_pdf_a4 import (
+    app as application,
+    init_db,
+)
 
 init_db()
