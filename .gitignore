@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+laboratorio_bromatologia.db
+laboratorio_bromatologia.db-*
