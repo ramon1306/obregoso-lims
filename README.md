@@ -21,7 +21,7 @@ py -m venv .venv
 
 Luego abre <http://127.0.0.1:5000>.
 
-En desarrollo local, el acceso no requiere autenticación. En producción, la app exige `APP_ENV=production`, `APP_USERNAME` y una `APP_PASSWORD` de al menos 16 caracteres.
+En desarrollo local, el acceso no requiere autenticación. En producción, las consultas son públicas y las operaciones que modifican datos requieren `APP_ENV=production`, `APP_USERNAME` y una `APP_PASSWORD` de al menos 16 caracteres. Los datos visibles en las consultas quedan accesibles públicamente; no publiques información que deba ser confidencial.
 
 ## Pruebas
 
@@ -53,6 +53,6 @@ PythonAnywhere Beginner ofrece una app web Flask y almacenamiento persistente en
    ```
 
 5. En la pestaña Web, crea una app con Manual configuration y Python 3.13. Selecciona el entorno virtual `~/.virtualenvs/obregoso-lims` y configura su archivo WSGI con el contenido de [pythonanywhere_wsgi.example.py](./pythonanywhere_wsgi.example.py).
-6. Recarga la app desde la pestaña Web. La autenticación HTTP solicitará el usuario y la contraseña configurados en `.env`.
+6. Recarga la app desde la pestaña Web. La consulta del sitio no solicita credenciales; al guardar o eliminar datos, se requiere el usuario y la contraseña configurados en `.env`.
 
 El ejemplo WSGI carga las variables privadas, configura SQLite dentro del directorio persistente del proyecto e inicializa el esquema sin borrar una base existente.

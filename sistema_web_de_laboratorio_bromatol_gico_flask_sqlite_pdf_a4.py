@@ -34,6 +34,9 @@ def require_production_authentication():
     if os.environ.get("APP_ENV", "development").lower() != "production":
         return None
 
+    if request.method in {"GET", "HEAD", "OPTIONS"}:
+        return None
+
     username = os.environ.get("APP_USERNAME", "")
     password = os.environ.get("APP_PASSWORD", "")
     if not username or len(password) < 16:
@@ -1095,6 +1098,13 @@ HTML_TEMPLATE = """
                 padding: 0 !important;
                 margin: 0 !important;
                 background: #ffffff !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            #print-preview-overlay {
+                position: static !important;
+                inset: auto !important;
             }
             .a4-sheet {
                 width: 100% !important;
@@ -2356,7 +2366,7 @@ HTML_TEMPLATE = """
                 </div>
 
                 <!-- Estudio Microbiológico -->
-                <div class="mb-4 avoid-break">
+                <div class="mb-4">
                     <div class="flex justify-between items-start border-b border-slate-400 pb-1 mb-1.5">
                         <div>
                             <div class="font-bold uppercase text-[9pt]">ESTUDIO MICROBIOLÓGICO</div>
@@ -2371,7 +2381,7 @@ HTML_TEMPLATE = """
                 </div>
 
                 <!-- Conclusión y Consideraciones Legales -->
-                <div class="mt-4 p-3 border border-slate-300 bg-slate-50 avoid-break text-[8.5pt]">
+                <div class="mt-4 p-3 border border-slate-300 bg-slate-50 text-[8.5pt]">
                     <div class="font-bold mb-1">CONCLUSIÓN:</div>
                     <p class="italic font-semibold text-slate-900 mb-2">${conclusionTexto}</p>
                     <div class="font-bold text-[8pt] mb-1">CONSIDERACIONES:</div>
